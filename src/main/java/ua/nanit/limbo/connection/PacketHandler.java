@@ -26,8 +26,10 @@ import ua.nanit.limbo.protocol.packets.login.PacketLoginStart;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusResponse;
+import ua.nanit.limbo.protocol.registry.Version;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.Logger;
+import ua.nanit.limbo.util.Colors;
 import ua.nanit.limbo.util.UuidUtil;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -79,7 +81,12 @@ public class PacketHandler {
         }
 
         if (!conn.getClientVersion().isSupported()) {
-            conn.disconnectLogin("Unsupported client version");
+            conn.disconnectLogin(Colors.of("&cUnsupported version - not supported by server"));
+            return;
+        }
+
+        if (conn.getClientVersion().fromTo(Version.V1_7_2, Version.V1_7_6)) {
+            conn.disconnectLogin(Colors.of("&cUnsupported version - outdated client version, use 1.8+"));
             return;
         }
 
